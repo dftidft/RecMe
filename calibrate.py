@@ -17,6 +17,8 @@ def calibrate(img, warpLt, warpRb):
     mask = colorFilter(img)
     gray = cv2.cvtColor(img, cv2.cv.CV_RGB2GRAY)
     corners = cv2.goodFeaturesToTrack(gray, 500, 0.05, 10, None, mask)
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.001)
+    cv2.cornerSubPix(gray, corners, (5, 5), (-1, -1), criteria)
 
     # for debug only
     '''
@@ -78,12 +80,12 @@ def calibrate(img, warpLt, warpRb):
 if __name__ == '__main__':
 
     #img = cv2.imread('g:/dataset/gochessboard/chessboard.jpg')
-    img = cv2.imread('G:/Dataset/gochessboard/test1/00001.jpg')
+    img = cv2.imread('G:/Dataset/gochessboard/test1/00100.jpg')
     img = cv2.resize(img, dsize=None, fx=0.5, fy=0.5)
-    homography = calibrate(img, (50.0, 50.0), (450.0, 450.0))
+    homography = calibrate(img, (24.0, 24.0), (456.0, 456.0))
     print homography
 
-    warpedImg = cv2.warpPerspective(img, homography, (500, 500))
+    warpedImg = cv2.warpPerspective(img, homography, (480, 480))
 
     cv2.imshow('', warpedImg)
     cv2.waitKey()

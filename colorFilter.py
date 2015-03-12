@@ -10,7 +10,7 @@ def colorFilter(img):
     #lower_yellow = np.array([10, 50, 50], dtype=np.uint8)
     #upper_yellow = np.array([50, 255, 255], dtype=np.uint8)
     lower_yellow = np.array([0, 0, 0], dtype=np.uint8)
-    upper_yellow = np.array([60, 255, 255], dtype=np.uint8)
+    upper_yellow = np.array([90, 255, 255], dtype=np.uint8)
     mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
 
     kernel = np.ones((7, 7))
@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     #img = cv2.imread('g:/dataset/gochessboard/chessboard.jpg')
     img = cv2.imread('G:/Dataset/gochessboard/test1/00001.jpg')
-    img = cv2.resize(img, dsize=None, fx=0.5, fy=0.5)
+    #img = cv2.resize(img, dsize=None, fx=0.5, fy=0.5)
     size = img.shape
     # yellow hsv > 60, s > 80, 220 > v > 50
     mask = colorFilter(img)
