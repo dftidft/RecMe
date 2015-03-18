@@ -34,7 +34,12 @@ fgmask = []
 nActionFrames = 6
 actionInLastFrames = [False for i in range(nActionFrames)]
 
+slots = [0 for i in range(0, 361)]
+fp = open('rec.txt', 'w')
+
 for iFrame in range(startFrame, endFrame):
+
+    prevSlots = slots[:]
 
     img = cv2.imread('%s/%05d.jpg' % (seqDir, iFrame))
     img = cv2.resize(img, dsize=None, fx=0.5, fy=0.5)
@@ -42,6 +47,7 @@ for iFrame in range(startFrame, endFrame):
     fgmask = bgsub.apply(img, None, 0.01)
     fgmask = cv2.morphologyEx(fgmask, cv2.cv.CV_MOP_OPEN, kernel, 1)
     fgmask = cv2.morphologyEx(fgmask, cv2.cv.CV_MOP_CLOSE, kernel, 1)
+
 
     if iFrame == startFrame:
         homography = calibrate(img, (24.0, 24.0), (456.0, 456.0))
@@ -54,6 +60,15 @@ for iFrame in range(startFrame, endFrame):
 
                 warpedImg = cv2.warpPerspective(img, homography, (480, 480))
                 slots, slotsPos = detectPiece(warpedImg, 24, 456)
+
+                for i in range(0, len(slots)):
+                    if slots[i] != prevSlots[i]:
+                        row = i % 19 + 1
+                        col = i / 19 + 1
+                        str = '(%d, %d)\n' % (row, col)
+                        fp.write(str)
+                        break
+
                 # sim = np.ones((480, 480, 3), dtype=np.uint8) * 100
                 for i in range(len(slots)):
                     if slots[i] == 1:
@@ -69,3 +84,5 @@ for iFrame in range(startFrame, endFrame):
     cv2.imshow('sim', sim)
     if cv2.waitKey(30) == 27:
         break
+
+fp.close()
